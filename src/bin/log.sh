@@ -41,7 +41,7 @@ log() {
     "rename" )
       updatedAt=`date +"%Y/%m/%d %I:%M:%S"`
       psql -U $USER -h $HOST -d $DBNAME -c " \
-        UPDATE $tableName SET file_name='$fileName', filePath='$filePath', updatedAt='$updatedAt' \
+        UPDATE $tableName SET file_name='$fileName', file_Path='$filePath', updated_at='$updatedAt' \
           WHERE sha256 = '$sha256'
     " ;;
   esac
