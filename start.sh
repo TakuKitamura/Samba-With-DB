@@ -4,7 +4,8 @@ tableName=$1
 user=ri-one
 host=192.168.11.5
 
-outsideFunctionAbsolutePath=`readlink -f ./src/bin/$tableName.sh`
+gitRootDirectoryPath=`git rev-parse --show-toplevel`
+outsideFunctionAbsolutePath=$gitRootDirectoryPath/src/bin/$tableName.sh
 
 # 外部ファイル読み込み
 . $outsideFunctionAbsolutePath
@@ -41,8 +42,8 @@ parseSambaLog() {
         fi
 
         # 外部関数呼び出し
-        $outsideFunctionAbsolutePath $tableName \
-          $netBIOSName $updatedTime $operation $operationAbsolutePath
+        $outsideFunctionAbsolutePath $gitRootDirectoryPath \
+          $tableName $netBIOSName $updatedTime $operation $operationAbsolutePath
       done
     fi
   done
