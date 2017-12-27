@@ -1,0 +1,3 @@
+123.123.123.123         geeg1   # application server
+123.123.123.124         geeg2   # web frontend server
+123.123.123.125         geeg3   # super fabulous exciting backup server #1
