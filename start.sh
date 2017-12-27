@@ -32,14 +32,11 @@ parseSambaLog() {
         echo operation, $operation
 
         if [ operation = "rename" ]; then
-          if [ [ $operatedPath =~ \| ] ]; then
-            while IFS='|' read oldFilePath newFilePath; do
-              operationAbsolutePath=$topDirecoryPath/$newFilePath
-            done
-          else
-          fi
+          while IFS='|' read oldFilePath newFilePath; do
+            operationAbsolutePath=$topDirecoryPath/$newFilePath
+          done
         else
-          operationAbsolutePath=$topDirecoryPath/$newFilePath
+          operationAbsolutePath=$topDirecoryPath/$operatedPath
         fi
         echo operationAbsolutePath, $operationAbsolutePath
         echo
