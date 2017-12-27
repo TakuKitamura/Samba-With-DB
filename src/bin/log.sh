@@ -12,8 +12,8 @@ log() {
 
   fileName=`basename filePath`
 
-  createTableSQL=../sql/createTable/$tableName.sql
-  createdTableSQL=../sql/createTable/${tableName}_created.sql
+  createTableSQL=$gitRootDirectoryPath/src/sql/createTable/$tableName.sql
+  createdTableSQL=$gitRootDirectoryPath/src/sql/createTable/${tableName}_created.sql
 
   sha256=`shasum -a 256 $filePath | cut -c 1-64`
 
