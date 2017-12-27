@@ -30,7 +30,17 @@ parseSambaLog() {
         echo netBIOSName, $netBIOSName
         echo updatedTime, $updatedTime
         echo operation, $operation
-        operationAbsolutePath=$topDirecoryPath/$operatedPath
+
+        if [ operation = "rename" ]; then
+          if [ [ $operatedPath =~ \| ] ]; then
+            while IFS='|' read oldFilePath newFilePath; do
+              operationAbsolutePath=$topDirecoryPath/$newFilePath
+            done
+          else
+          fi
+        else
+          operationAbsolutePath=$topDirecoryPath/$newFilePath
+        fi
         echo operationAbsolutePath, $operationAbsolutePath
         echo
 

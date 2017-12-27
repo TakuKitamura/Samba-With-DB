@@ -27,9 +27,24 @@ log() {
     echo
   fi
 
-  psql psql -U $USER -h $HOST -d $DBNAME -c " \
-  INSERT INTO $tableName \
-    (create_file_user_name, file_name, file_path, sha256, created_at, updated_at)
-      VALUES ('$createFileUserName', '$fileName', '$filePath', '$sha256', '$updatedAt', '$updatedAt')
-  "
+  case $operation in
+    "pwrite" ) psql -U $USER -h $HOST -d $DBNAME -c " \
+      INSERT INTO $tableName \
+        (create_file_user_name, file_name, file_path, sha256, created_at, updated_at) \
+          VALUES ('$createFileUserName', '$fileName', '$filePath', '$sha256', '$updatedAt', '$updatedAt');
+    " ;;
+
+    "unlink" ) psql -U $USER -h $HOST -d $DBNAME -c " \
+      DELETE FROM $tableName WHERE file_path = '$filePath';
+    " ;;
+
+    "rename" )
+      updatedAt=`date +"%Y/%m/%d %I:%M:%S"`
+      psql -U $USER -h $HOST -d $DBNAME -c " \
+        UPDATE $tableName SET file_name='$fileName', filePath='$filePath', updatedAt='$updatedAt' \
+          WHERE sha256 = '$sha256'
+    " ;;
+  esac
+
+
 }
