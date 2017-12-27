@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # 外部変数読み込み
-  . $gitRootDirectoryPath/src/bin/sql/createTable/db.conf
+  . $gitRootDirectoryPath/src/sql/createTable/db.conf
 
 log() {
   tableName=$2
