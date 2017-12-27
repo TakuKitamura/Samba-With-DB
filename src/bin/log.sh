@@ -12,17 +12,17 @@ log() {
 
   fileName=`basename $filePath`
 
+  sha256=`shasum -a 256 $filePath | cut -c 1-64`
+
   createTableSQL=$gitRootDirectoryPath/src/sql/createTable/$tableName.sql
   createdTableSQL=$gitRootDirectoryPath/src/sql/createTable/${tableName}_created.sql
-
-  sha256=`shasum -a 256 $filePath | cut -c 1-64`
 
   if [ -f $createTableSQL ]; then
     psql -U $USER -h $HOST -d $DBNAME < $createTableSQL
     mv $createTableSQL $gitRootDirectoryPath/src/sql/createTable/${tableName}_created.sql
   fi
 
-  if [ ! -f $createdTableSQL ]; then
+  if [ -f $createdTableSQL ]; then
     cat $createdTableSQL
     echo
   fi
@@ -42,9 +42,7 @@ log() {
       updatedAt=`date +"%Y/%m/%d %I:%M:%S"`
       psql -U $USER -h $HOST -d $DBNAME -c " \
         UPDATE $tableName SET file_name='$fileName', file_Path='$filePath', updated_at='$updatedAt' \
-          WHERE sha256 = '$sha256'
+          WHERE sha256 = '$sha256';
     " ;;
   esac
-
-
 }
