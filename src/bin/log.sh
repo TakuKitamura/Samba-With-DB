@@ -10,14 +10,14 @@ log() {
   operation=$5
   filePath=$6
 
-  fileName=`basename filePath`
+  fileName=`basename $filePath`
 
   createTableSQL=$gitRootDirectoryPath/src/sql/createTable/$tableName.sql
   createdTableSQL=$gitRootDirectoryPath/src/sql/createTable/${tableName}_created.sql
 
   sha256=`shasum -a 256 $filePath | cut -c 1-64`
 
-  if [ ! -f $createTableSQL ]; then
+  if [ -f $createTableSQL ]; then
     psql -U $USER -h $HOST -d $DBNAME < $createTableSQL
     mv $createTableSQL $gitRootDirectoryPath/src/sql/createTable/${tableName}_created.sql
   fi
