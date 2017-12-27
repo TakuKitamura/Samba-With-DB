@@ -1,10 +1,9 @@
 #!/bin/bash
 
-# 外部変数読み込み
+log() {
+  # 外部変数読み込み
   gitRootDirectoryPath=$1
   . $gitRootDirectoryPath/src/sql/createTable/db.conf
-
-log() {
   tableName=$2
   createFileUserName=$3
   updatedAt=$4
