@@ -36,13 +36,8 @@ parseSambaLog() {
 
         IFS=''
 
-        if [ ! -f $syslogSymbolicLink ]; then
-          # 既にsyslog のシンボリックリンクが存在していなかったら、念のためシンボリックを作成
-          ln -s $sysLogPath $syslogSymbolicLink
-        fi
-
         # 外部関数呼び出し
-        $outsideFunctionAbsolutePath $gitRootDirectoryPath \
+        log $gitRootDirectoryPath \
           $tableName $netBIOSName $updatedTime $operation $operationAbsolutePath
       done
     fi
