@@ -1,14 +1,14 @@
 #!/bin/bash
 
 # 外部変数読み込み
-. ../sql/createTable/db.conf
+  . $gitRootDirectoryPath/src/bin/sql/createTable/db.conf
 
 log() {
-  tableName=$1
-  createFileUserName=$2
-  updatedAt=$3
-  operation=$4
-  filePath=$5
+  tableName=$2
+  createFileUserName=$3
+  updatedAt=$4
+  operation=$5
+  filePath=$6
 
   fileName=`basename filePath`
 
