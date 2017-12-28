@@ -2,6 +2,13 @@
 
 tableName=$1
 
+# コマンドライン引数が渡されているか確認
+if [ $# -ne 1]; then
+  echo "第一引数にテーブル名が必要です。"
+  echo "詳しくは、README を確認してください。"
+  exit 1
+fi
+
 gitRootDirectoryPath=`git rev-parse --show-toplevel`
 outsideFunctionAbsolutePath=$gitRootDirectoryPath/src/bin/$tableName.sh
 
@@ -42,14 +49,15 @@ parseSambaLog() {
           echo $topDirecoryPath/$operatedPath > operationAbsolutePathTemp
         fi
 
-        trap "rm $operationAbsolutePathTemp" 0
-
         echo tableName, $tableName
         echo netBIOSName, $netBIOSName
         echo updatedTime, $updatedTime
         echo operation, $operation
+
+        operationAbsolutePath=`cat $operationAbsolutePathTemp`
+
         echo operationAbsolutePath, $operationAbsolutePath
-        echo
+        rm $operationAbsolutePath
 
         # 外部関数呼び出し
         log $gitRootDirectoryPath \
