@@ -6,23 +6,27 @@
 # ただ、処理の流れは理解できるようにコメントはきちんと書きます
 
 # コマンドライン引数が渡されているか確認
-if [ $# -ne 1]; then
-  echo "第一引数にテーブル名が必要です。"
+
+if [ $# -ne 2]; then
+  echo "第一引数にデータベース名、第二引数にテーブル名が必要です。"
   echo "詳しくは、README を確認してください。"
   exit 1
 fi
 
 # コマンドライン引数の第一引数を取得
-# ex $ /home/hoge/keep-watch-on-samba/start.sh user # この場合 $tableName は user
-tableName=$1
+# ex $ /home/hoge/keep-watch-on-samba/start.sh soccer log
+# この場合 $dataBaseName は soccer $tableName は log
+
+dataBaseName=$1
+tableName=$2
 
 # gitのルートパスを取得
 # ex. /home/hoge/keep-watch-on-samba
 gitRootDirectoryPath=`git rev-parse --show-toplevel`
 
 # src/bin/(テーブル名).sh というファイルの絶対パスを取得し、その外部ファイルを読み込み
-# /home/hoge/keep-watch-on-samba/src/bin/user.sh
-outsideFunctionAbsolutePath=$gitRootDirectoryPath/src/bin/$tableName.sh
+# ex. /home/hoge/keep-watch-on-samba/src/bin/soccer/user.sh
+outsideFunctionAbsolutePath=$gitRootDirectoryPath/src/bin/$dataBaseName/$tableName.sh
 . $outsideFunctionAbsolutePath
 
 syslogSymbolicLink='./syslog'

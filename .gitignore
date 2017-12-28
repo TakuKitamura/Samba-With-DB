@@ -4,9 +4,6 @@
 # config ファイル
 /src/conf/*.conf
 
-# CREATE TABLE
-/src/sql/createTable/*.sql
-
 # メタデータ
 /.DS_Store
 /Thumbs.db
