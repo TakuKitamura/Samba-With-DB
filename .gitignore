@@ -6,3 +6,7 @@
 
 # CREATE TABLE
 /src/sql/createTable/*.sql
+
+# メタデータ
+/.DS_Store
+/Thumbs.db
