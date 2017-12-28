@@ -152,8 +152,8 @@ parseSambaLog() {
 
         # tableName　関数は、引数に格納されたデータをもとに、DBへSQLを発行する
         # SQL については → Google
-        $tableName $gitRootDirectoryPath \
-          $tableName $netBIOSName $updatedTime $operation $beforeOperationAbsolutePath $afterOperationAbsolutePath
+        $tableName $gitRootDirectoryPath $dataBaseName $tableName \
+          $netBIOSName $updatedTime $operation $beforeOperationAbsolutePath $afterOperationAbsolutePath
       done
     fi
   done
