@@ -99,8 +99,8 @@ parseSambaLog() {
         # 下記の処理で、一時ファイルを利用しているかは、(もっとスマートな実装ができる気がする)
         # http://www.atmarkit.co.jp/ait/articles/1209/14/news147.html などを参照
 
-        afterOperationAbsolutePathTemp=mktemp
-        beforeOperationAbsolutePathTemp=mktemp
+        afterOperationAbsolutePathTemp=`mktemp`
+        beforeOperationAbsolutePathTemp=`mktemp`
 
         echo topDirecoryPath, $topDirecoryPath
         echo operatedPath, $operatedPath
