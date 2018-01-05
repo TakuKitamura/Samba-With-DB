@@ -24,6 +24,13 @@ tableName=$2
 # ex. /home/hoge/keep-watch-on-samba
 gitRootDirectoryPath=`git rev-parse --show-toplevel`
 
+# 実行ファイルを git root で実行しているか確認
+if [ ! -f $gitRootDirectoryPath ]; then
+  echo "git root ディレクトリで $ ./start.sh と実行してください。"
+  echo "詳しくは、README を確認してください。"
+  exit 2
+fi
+
 # src/bin/(テーブル名).sh というファイルの絶対パスを取得し、その外部ファイルを読み込み
 # ex. /home/hoge/keep-watch-on-samba/src/bin/soccer/user.sh
 outsideFunctionAbsolutePath=$gitRootDirectoryPath/src/bin/$dataBaseName/$tableName.sh
@@ -42,6 +49,14 @@ syslogSymbolicLink='./syslog'
 # syslog のシンボリックリンクが存在しなかったら、シンボリックリンクを作成
 if [ ! -f $syslogSymbolicLink ]; then
   sysLogPath='/var/log/syslog'
+
+  # 正しい第一引数のデータベース名 もしくは、第二引数のテーブル名 かを確認
+  if [ ! -f $sysLogPath ]; then
+    echo "デフォルトではsysLogの絶対パスは、$sysLogPath に設定されています。"
+    echo "sysLogの絶対パスが違う場合は、 start.sh の sysLogPath を修正してください。"
+    echo "詳しくは、README を確認してください。"
+    exit 2
+  fi
   ln -s $sysLogPath $syslogSymbolicLink
 fi
 
@@ -166,3 +181,7 @@ parseSambaLog() {
 
 # main 処理
 sudo tail --retry -n 0 $syslogSymbolicLink | parseSambaLog
+
+echo "何かしらが原因で tail コマンドの実行が終了しました。"
+echo "何が原因で、 tail コマンドが終了したか調べてください。"
+exit 1
