@@ -14,7 +14,7 @@ log() {
   # HOST=192.168.11.5
   # dataBaseName=soccer
   # USER=ri-one
-  . $gitRootDirectoryPath/sql/$dataBaseName/db.conf
+  . $gitRootDirectoryPath/sql$dataBaseName/db.conf
 
   # log 関数へ渡された第八引数
   # ex. /home/hoge/share/hoge/test.txt
@@ -121,3 +121,5 @@ log() {
     " ;;
   esac
 }
+
+log
