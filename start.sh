@@ -10,7 +10,7 @@
 if [ $# -ne 2 ]; then
   echo "第一引数にデータベース名、第二引数にテーブル名が必要です。"
   echo "詳しくは、README を確認してください。"
-  exit 1
+  exit 2
 fi
 
 # コマンドライン引数の第一引数を取得
@@ -27,6 +27,14 @@ gitRootDirectoryPath=`git rev-parse --show-toplevel`
 # src/bin/(テーブル名).sh というファイルの絶対パスを取得し、その外部ファイルを読み込み
 # ex. /home/hoge/keep-watch-on-samba/src/bin/soccer/user.sh
 outsideFunctionAbsolutePath=$gitRootDirectoryPath/src/bin/$dataBaseName/$tableName.sh
+
+# 正しい第一引数のデータベース名 もしくは、第二引数のテーブル名 かを確認
+if [ ! -f $outsideFunctionAbsolutePath ]; then
+  echo "第一引数のデータベース名 もしくは、第二引数のテーブル名が誤っています。"
+  echo "詳しくは、README を確認してください。"
+  exit 2
+fi
+
 . $outsideFunctionAbsolutePath
 
 syslogSymbolicLink='./syslog'
