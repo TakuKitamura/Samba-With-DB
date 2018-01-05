@@ -14,7 +14,16 @@ log() {
   # HOST=192.168.11.5
   # dataBaseName=soccer
   # USER=ri-one
-  . $gitRootDirectoryPath/sql/$dataBaseName/db.conf
+  dbConfPath=$gitRootDirectoryPath/src/sql/$dataBaseName/db.conf
+
+  # db.conf ファイルが指定ディレクトリに存在するか確認
+  if [ ! -f $dbConfPath ]; then
+    echo "keep-watch-on-samba/src/sql/(データベース名)/db.conf という設定ファイルを作成する必要があります。"
+    echo "詳しくは、README を確認してください。"
+    exit 2
+  fi
+
+  . $dbConfPath
 
   # log 関数へ渡された第八引数
   # ex. /home/hoge/share/hoge/test.txt
@@ -35,11 +44,6 @@ log() {
   # ex. /home/hoge/keep-watch-on-samba/src/sql/$dataBaseName/user.sql
   createTableSQL=$gitRootDirectoryPath/src/sql/$dataBaseName/$tableName.sql
 
-
-  # テーブルを作成後のsqlファイル へのパス
-  # ex. /home/hoge/keep-watch-on-samba/src/sql/$dataBaseName/user_created.sql
-  createdTableSQL=$gitRootDirectoryPath/src/sql/$dataBaseName/${tableName}_created.sql
-
   # $createTableSQL のパスが存在するとき true
   # true のときテーブルを作成する
   if [ -f $createTableSQL ]; then
@@ -48,19 +52,36 @@ log() {
     # psql についての詳細は → Google!
     psql -U $USER -h $HOST -d $dataBaseName < $createTableSQL
 
+    # テーブルを作成後のsqlファイル へのパス
+    # ex. /home/hoge/keep-watch-on-samba/src/sql/$dataBaseName/user_created.sql
+    createdTableSQL=$gitRootDirectoryPath/src/sql/$dataBaseName/${tableName}_created.sql
+
+    if [ -f $createdTableSQL ]; then
+      echo "keep-watch-on-samba/src/sql/(データベース名)/(テーブル名)_created.sql というファイルが既に存在します。"
+      echo "もし、*_created.sql というファイルが必要ないのであれば削除してください。"
+      echo "ファイルの上書きを防ぐために終了します。"
+      echo "詳しくは、README を確認してください。"
+      exit 2
+    fi
+
     # /home/hoge/keep-watch-on-samba/src/sql/$dataBaseName/user.sql から
     # へファイル名変更 /home/hoge/keep-watch-on-samba/src/sql/$dataBaseName/user_created.sql
     mv $createTableSQL $createdTableSQL
+
+    # $createdTableSQL のパスが存在するとき true
+    # true のとき、既にテーブルが作成されているので、テーブルを作成したsqlファイルを標準出力
+    if [ -f $createdTableSQL ]; then
+      echo "テーブルを作成したSQL"
+      cat $createdTableSQL
+      echo
+    fi
+
+  else
+    echo "keep-watch-on-samba/src/sql/(データベース名)/(テーブル名).sql というファイルを作成する必要があります。"
+    echo "詳しくは、README を確認してください。"
+    exit 2
   fi
 
-
-  # $createdTableSQL のパスが存在するとき true
-  # true のとき、既にテーブルが作成されているので、テーブルを作成したsqlファイルを標準出力
-  if [ -f $createdTableSQL ]; then
-    echo "テーブルを作成したSQL"
-    cat $createdTableSQL
-    echo
-  fi
 
   # log 関数へ渡された第六引数
   # ex. pwrite
