@@ -25,7 +25,7 @@ tableName=$2
 gitRootDirectoryPath=`git rev-parse --show-toplevel`
 
 # 実行ファイルを git root で実行しているか確認
-if [ ! -f $gitRootDirectoryPath ]; then
+if [ ! -d $gitRootDirectoryPath ]; then
   echo "git root ディレクトリで $ ./start.sh と実行してください。"
   echo "詳しくは、README を確認してください。"
   exit 2
