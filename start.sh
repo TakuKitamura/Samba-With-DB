@@ -37,22 +37,6 @@ if [ ! -f $syslogSymbolicLink ]; then
   ln -s $sysLogPath $syslogSymbolicLink
 fi
 
-# retry オプション
-# ファイルを名前で追跡していて、ファイルがなくなったことを検知したら、 再オープンを成功するまで繰り返す
-
-# n LINES オプション
-# 末尾の LINES 行を表示する。 この場合、末尾の出力は必要ないので 0を指定
-
-# syslog のシンボリックが指す先、 $sysLogPath のファイルに変更があると関数 parseSambaLog呼び出し
-# C言語的に書くと
-# while(1) {
-#   if(ファイル変更が起きた)
-#     変更が起きた文字列に対しての処理;
-# }
-
-# main 処理
-sudo tail --retry -n 0 $syslogSymbolicLink | parseSambaLog
-
 # $sysLogPath のファイルの末尾行の文字列を必要な形に整形する関数
 parseSambaLog() {
 
@@ -158,3 +142,19 @@ parseSambaLog() {
     fi
   done
 }
+
+# retry オプション
+# ファイルを名前で追跡していて、ファイルがなくなったことを検知したら、 再オープンを成功するまで繰り返す
+
+# n LINES オプション
+# 末尾の LINES 行を表示する。 この場合、末尾の出力は必要ないので 0を指定
+
+# syslog のシンボリックが指す先、 $sysLogPath のファイルに変更があると関数 parseSambaLog呼び出し
+# C言語的に書くと
+# while(1) {
+#   if(ファイル変更が起きた)
+#     変更が起きた文字列に対しての処理;
+# }
+
+# main 処理
+sudo tail --retry -n 0 $syslogSymbolicLink | parseSambaLog
