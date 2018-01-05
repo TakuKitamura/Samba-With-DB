@@ -180,7 +180,7 @@ parseSambaLog() {
 # }
 
 # main 処理
-sudo tail --retry -n 0 $syslogSymbolicLink | parseSambaLog
+sudo tail --follow=name --retry -n 0 $syslogSymbolicLink | parseSambaLog
 
 echo "何かしらが原因で tail コマンドの実行が終了しました。"
 echo "何が原因で、 tail コマンドが終了したか調べてください。"
