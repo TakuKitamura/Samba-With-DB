@@ -93,30 +93,46 @@ log() {
     "pwrite" )
       echo 実行:$operation
 
-      psql -U $USER -h $HOST -d $dataBaseName -c " \
-      SELECT COUNT(*) FROM $tableName WHERE file_path = '$filePath' ;
-      "
-
-      # log 関数へ渡された第四引数
-      # ex. hogetaro
-      createFileUserName=$4
-
-      # クライアントが操作を行ったファイル名
-      # ex. $ basename /home/hoge/share/hoge/test.txt
-      #       test.txt
-      fileName=`basename $filePath`
-
       # log 関数へ渡された第五引数
       # ex. 2017/12/27 11:05:00
       updatedAt=$5
 
-      # psql についての詳細は → Google!
-      # SQL についての詳細は → Google!
-      psql -U $USER -h $HOST -d $dataBaseName -c " \
-      INSERT INTO $tableName \
-        (create_file_user_name, file_name, file_path, sha256, created_at, updated_at) \
-          VALUES ('$createFileUserName', '$fileName', '$filePath', '$sha256', '$updatedAt', '$updatedAt') ;
-    " ;;
+      # file_pathの行をカウントし、その数を格納
+      filePathCount = `psql -U $USER -h $HOST -d $dataBaseName -c " \
+        SELECT COUNT(file_path) FROM $tableName as count WHERE file_path = '$filePath' ;
+        "
+        ` | cut -c 15
+
+      # ファイルを新規作成する時
+      if [ $filePathCount = "0" ]; then
+
+        # log 関数へ渡された第四引数
+        # ex. hogetaro
+        createFileUserName=$4
+
+        # クライアントが操作を行ったファイル名
+        # ex. $ basename /home/hoge/share/hoge/test.txt
+        #       test.txt
+        fileName=`basename $filePath`
+
+        # psql についての詳細は → Google!
+        # SQL についての詳細は → Google!
+        psql -U $USER -h $HOST -d $dataBaseName -c " \
+        INSERT INTO $tableName \
+          (create_file_user_name, file_name, file_path, sha256, created_at, updated_at) \
+            VALUES ('$createFileUserName', '$fileName', '$filePath', '$sha256', '$updatedAt', '$updatedAt') ;
+        "
+
+      # 既に存在するファイルを更新した時
+      else
+        psql -U $USER -h $HOST -d $dataBaseName -c " \
+          UPDATE $tableName SET sha256='$sha256', updated_at='$updatedAt' \
+            WHERE file_path='$filePath' ;
+        "
+      fi
+
+      ;;
+
 
     # $operation が unlinkのときに行われたファイル操作は削除
     "unlink" )
