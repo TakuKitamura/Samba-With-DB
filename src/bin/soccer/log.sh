@@ -154,11 +154,37 @@ log() {
       # ex. /home/hoge/share/hoge/test.txt
       beforeFilePath=$7
 
-      # psql についての詳細は → Google!
-      # SQL についての詳細は → Google!
-      psql -U $USER -h $HOST -d $dataBaseName -c " \
-        UPDATE $tableName SET file_name='$fileName', file_Path='$filePath', updated_at='$updatedAt' \
-          WHERE file_path='$beforeFilePath' AND sha256 = '$sha256' ;
-    " ;;
+      # ファイル、シンボリックリンクの場合
+      if [ -f $beforeFilePath ]; then
+
+        # psql についての詳細は → Google!
+        # SQL についての詳細は → Google!
+        psql -U $USER -h $HOST -d $dataBaseName -c " \
+          UPDATE $tableName SET file_name='$fileName', file_Path='$filePath', updated_at='$updatedAt' \
+            WHERE file_path='$beforeFilePath' AND sha256 = '$sha256' ;
+        "
+
+      # ディレクトリの場合
+      else
+        # psql についての詳細は → Google!
+        # SQL についての詳細は → Google!
+
+        filePath=$filePath/$fileName
+        sha256=`shasum -a 256 $filePath | cut -c 1-64`
+
+        echo filePath=$filePath
+        echo sha256=$sha256
+        echo WHEREfilePath=$beforeFilePath/$fileName
+
+        psql -U $USER -h $HOST -d $dataBaseName -c " \
+          UPDATE $tableName SET file_Path='$filePath' \
+            WHERE file_path='$beforeFilePath/$fileName' AND sha256 = '$sha256' ;
+        "
+      fi
+
+
+
+
+    ;;
   esac
 }
