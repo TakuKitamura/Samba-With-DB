@@ -98,7 +98,7 @@ log() {
       updatedAt=$5
 
       # file_pathの行をカウントし、その数を格納
-      filePathCount = `psql -U $USER -h $HOST -d $dataBaseName -c " \
+      filePathCount=`psql -U $USER -h $HOST -d $dataBaseName -c " \
         SELECT COUNT(file_path) FROM $tableName as count WHERE file_path = '$filePath' ;
         "
         ` | cut -c 15
