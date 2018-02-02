@@ -92,6 +92,11 @@ log() {
     # $operation が pwriteのときに行われたファイル操作は新規作成
     "pwrite" )
       echo 実行:$operation
+
+      psql -U $USER -h $HOST -d $dataBaseName -c " \
+      SELECT COUNT(*) FROM $tableName WHERE file_path = '$filePath' ;
+      "
+
       # log 関数へ渡された第四引数
       # ex. hogetaro
       createFileUserName=$4
@@ -110,7 +115,7 @@ log() {
       psql -U $USER -h $HOST -d $dataBaseName -c " \
       INSERT INTO $tableName \
         (create_file_user_name, file_name, file_path, sha256, created_at, updated_at) \
-          VALUES ('$createFileUserName', '$fileName', '$filePath', '$sha256', '$updatedAt', '$updatedAt');
+          VALUES ('$createFileUserName', '$fileName', '$filePath', '$sha256', '$updatedAt', '$updatedAt') ;
     " ;;
 
     # $operation が unlinkのときに行われたファイル操作は削除
@@ -118,7 +123,7 @@ log() {
       # psql についての詳細は → Google!
       # SQL についての詳細は → Google!
       psql -U $USER -h $HOST -d $dataBaseName -c " \
-      DELETE FROM $tableName WHERE file_path = '$filePath';
+      DELETE FROM $tableName WHERE file_path = '$filePath' ;
     " ;;
 
     "rename" )
@@ -137,7 +142,7 @@ log() {
       # SQL についての詳細は → Google!
       psql -U $USER -h $HOST -d $dataBaseName -c " \
         UPDATE $tableName SET file_name='$fileName', file_Path='$filePath', updated_at='$updatedAt' \
-          WHERE file_path='$beforeFilePath' AND sha256 = '$sha256';
+          WHERE file_path='$beforeFilePath' AND sha256 = '$sha256' ;
     " ;;
   esac
 }
