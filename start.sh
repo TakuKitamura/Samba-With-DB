@@ -88,7 +88,7 @@ parseSambaLog() {
       # '|' 区切りで、sysLog の行をそれぞれの変数に読み取り
       # 実際のデータは、ex. $ cat /home/ri-one/keep-watch-on-samba/sysLog などで要確認
       while IFS='|' read header netBIOSName topDirecoryPath updatedTime \
-        operation operationResult operatedPath; do
+      operation operationResult operatedPath; do
 
         # mktemp: 適当なファイル名の空ファイルを作成する
         # 一時的に、データを保存したいので使用する
@@ -109,16 +109,16 @@ parseSambaLog() {
         # OPERATION は、 smbd_audit についてを参照
         if [ $operation = "rename" ]; then
           echo $operatedPath | \
-            # ex. operatedPathには、 (ファイル操作前のファイルパス)|(ファイル操作後のファイルパス)
-            # という、パスが渡されるので '|' で区切り、それぞれの変数に格納
-            while IFS='|' read beforeFilePath afterFilePath; do
+          # ex. operatedPathには、 (ファイル操作前のファイルパス)|(ファイル操作後のファイルパス)
+          # という、パスが渡されるので '|' で区切り、それぞれの変数に格納
+          while IFS='|' read beforeFilePath afterFilePath; do
 
-              # $[before|after]OperationAbsolutePathTemp それぞれに、ファイル操作を行う前、行った後のファイルパスを書き込み
-              # ex. $beforeOperationAbsolutePath: /home/hoge/share/hoge/test.txt
-              # ex. $afterOperationAbsolutePath: /home/hoge/share/hoge/test.txt
-              echo $topDirecoryPath/$beforeFilePath > beforeOperationAbsolutePathTemp
-              echo $topDirecoryPath/$afterFilePath > afterOperationAbsolutePathTemp
-            done
+            # $[before|after]OperationAbsolutePathTemp それぞれに、ファイル操作を行う前、行った後のファイルパスを書き込み
+            # ex. $beforeOperationAbsolutePath: /home/hoge/share/hoge/test.txt
+            # ex. $afterOperationAbsolutePath: /home/hoge/share/hoge/test.txt
+            echo $topDirecoryPath/$beforeFilePath > beforeOperationAbsolutePathTemp
+            echo $topDirecoryPath/$afterFilePath > afterOperationAbsolutePathTemp
+          done
         else
           # $[before|after]OperationAbsolutePathTemp それぞれに、空文字、ファイル操作を行った後のファイルパスを書き込み
           # ex. $beforeOperationAbsolutePath:
@@ -159,10 +159,10 @@ parseSambaLog() {
 
         # tableName　関数は、引数に格納されたデータをもとに、DBへSQLを発行する
         # SQL については → Google
-	echo $tableName, $gitRootDirectoryPath, $dataBaseName, $tableName, \
-			          $netBIOSName, $updatedTime, $operation, $beforeOperationAbsolutePath, $afterOperationAbsolutePath
+        echo $tableName, $gitRootDirectoryPath, $dataBaseName, $tableName, \
+        $netBIOSName, $updatedTime, $operation, $beforeOperationAbsolutePath, $afterOperationAbsolutePath
         $tableName "$gitRootDirectoryPath" "$dataBaseName" "$tableName" \
-          "$netBIOSName" "$updatedTime" "$operation" "$beforeOperationAbsolutePath" "$afterOperationAbsolutePath"
+        "$netBIOSName" "$updatedTime" "$operation" "$beforeOperationAbsolutePath" "$afterOperationAbsolutePath"
       done
     fi
   done
