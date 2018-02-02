@@ -68,7 +68,6 @@ log() {
       cat $createdTableSQL
       echo
     else
-      echo "ああああああああああああああああああ"
       cp $createTableSQL $createdTableSQL
       psql -U $USER -h $HOST -d $dataBaseName < $createTableSQL
     fi
@@ -79,7 +78,6 @@ log() {
     echo "詳しくは、README を確認してください。"
     exit 2
   fi
-
 
   # log 関数へ渡された第六引数
   # ex. pwrite
@@ -98,9 +96,9 @@ log() {
       updatedAt=$5
 
       # file_pathの行をカウントし、その数を格納
-      filePathCount=`psql -U $USER -h $HOST -d $dataBaseName -c " \
+      filePathCount=`psql -U $USER -h $HOST -d $dataBaseName -t -c " \
         SELECT COUNT(file_path) FROM $tableName as count WHERE file_path = '$filePath' ;
-        " | tr -d '\n' | tr -d ' ' | cut -c 13`
+        "`
 
       echo $filePathCount
       # ファイルを新規作成する時
@@ -117,6 +115,8 @@ log() {
 
         # psql についての詳細は → Google!
         # SQL についての詳細は → Google!
+
+        # ファイルを新規作成
         psql -U $USER -h $HOST -d $dataBaseName -c " \
         INSERT INTO $tableName \
           (create_file_user_name, file_name, file_path, sha256, created_at, updated_at) \
@@ -125,6 +125,7 @@ log() {
 
       # 既に存在するファイルを更新した時
       else
+        # ファイルを編集
         psql -U $USER -h $HOST -d $dataBaseName -c " \
           UPDATE $tableName SET sha256='$sha256', updated_at='$updatedAt' \
             WHERE file_path='$filePath' ;
@@ -138,6 +139,8 @@ log() {
     "unlink" )
       # psql についての詳細は → Google!
       # SQL についての詳細は → Google!
+
+      # ファイルを削除
       psql -U $USER -h $HOST -d $dataBaseName -c " \
       DELETE FROM $tableName WHERE file_path = '$filePath' ;
     " ;;
@@ -146,10 +149,6 @@ log() {
       # クライアントが操作を行ったファイル名
       fileName=`basename $filePath`
 
-      # log 関数へ渡された第四引数
-      # ex. 2017/12/27 11:05:00
-      updatedAt=`date +"%Y/%m/%d %I:%M:%S"`
-
       # log 関数へ渡された第七引数
       # ex. /home/hoge/share/hoge/test.txt
       beforeFilePath=$7
@@ -157,8 +156,14 @@ log() {
       # ファイル、シンボリックリンクの場合
       if [ -f $beforeFilePath ]; then
 
+        # log 関数へ渡された第四引数
+        # ex. 2017/12/27 11:05:00
+        updatedAt=`date +"%Y/%m/%d %I:%M:%S"`
+
         # psql についての詳細は → Google!
         # SQL についての詳細は → Google!
+
+        # ファイル名を変更
         psql -U $USER -h $HOST -d $dataBaseName -c " \
           UPDATE $tableName SET file_name='$fileName', file_Path='$filePath', updated_at='$updatedAt' \
             WHERE file_path='$beforeFilePath' AND sha256 = '$sha256' ;
@@ -169,22 +174,18 @@ log() {
         # psql についての詳細は → Google!
         # SQL についての詳細は → Google!
 
-        filePath=$filePath/$fileName
-        sha256=`shasum -a 256 $filePath | cut -c 1-64`
+        # ディレクトリ名変更前のパス
+        beforeDirPath=$beforeFilePath/
 
-        echo filePath=$filePath
-        echo sha256=$sha256
-        echo WHEREfilePath=$beforeFilePath/$fileName
+        # ディレクトリ名変更後のパス
+        dirPath=$filePath/
 
+        # ディレクトリ名を変更
         psql -U $USER -h $HOST -d $dataBaseName -c " \
-          UPDATE $tableName SET file_Path='$filePath' \
-            WHERE file_path='$beforeFilePath/$fileName' AND sha256 = '$sha256' ;
+          UPDATE $tableName SET file_Path=replace(file_Path, '$beforeDirPath', '$dirPath') \
+            WHERE file_path LIKE '$beforeDirPath%' ;
         "
       fi
-
-
-
-
     ;;
   esac
 }
