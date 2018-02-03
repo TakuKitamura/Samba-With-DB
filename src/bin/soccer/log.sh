@@ -15,7 +15,7 @@ sendAbsolutePathListOfFileServer() {
 
   host="13.231.55.13"
 
-  baseDirectory=$HOME/share/
+  baseDirectory=`ssh -i $identifyFilePath $relayPointUser@$host "pwd"`/share/
 
   sedCondition=`echo $baseDirectory | sed -e 's/\//\\\\\//g'`
 
