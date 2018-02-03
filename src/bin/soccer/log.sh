@@ -15,9 +15,9 @@ sendAbsolutePathListOfFileServer() {
 
   host="13.231.55.13"
 
-  baseDirectory=$Home/share/
+  baseDirectory=$HOME/share/
 
-  sedCondition=`echo $baseDirectory | sed -e 's/\//\\\//g'`
+  sedCondition=`echo $baseDirectory | sed -e 's/\//\\\\\//g'`
 
   absolutePathListOfFileServer=`find $baseDirectory | sed -e "s/$sedCondition//g" | sed '1d'`
 
