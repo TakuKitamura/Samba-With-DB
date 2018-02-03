@@ -6,5 +6,5 @@ CREATE TABLE log
 	  file_name text  NOT NULL,
 	  created_at timestamp with time zone NOT NULL,
 	  updated_at timestamp with time zone NOT NULL,
-	  PRIMARY KEY (file_path, sha256)
+	  PRIMARY KEY (file_path)
 );
