@@ -21,7 +21,7 @@ sendAbsolutePathListOfFileServer() {
 
   absolutePathListOfFileServer=`find $baseDirectory | sed -e "s/$sedCondition//g" | sed '1d'`
 
-  ssh -i  $identifyFilePath "echo $absolutePathListOfFileServer > .absolutePathListOfFileServer"
+  ssh -i  $identifyFilePath $relayPointUser@$host "echo $absolutePathListOfFileServer > .absolutePathListOfFileServer"
 }
 
 # log 関数は、引数に格納されたデータをもとに、DBへSQLを発行する
