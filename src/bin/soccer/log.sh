@@ -48,27 +48,20 @@ log() {
   # true のときテーブルを作成する
   if [ -f $createTableSQL ]; then
 
-    # ex. psql -U ri-one -h 192.168.11.5 -d soccer < /home/ri-one/keep-watch-on-samba/src/sql/$dataBaseName/user.sql
-    # psql についての詳細は → Google!
-    # psql -U $USER -h $HOST -d $dataBaseName < $createTableSQL
+    # $tableNameという、テーブルが存在する場合は、$tableNameが、存在しない場合はNullが格納
+    existTableName=`psql -U $USER -h $HOST -d $dataBaseName -t -c " \
+    SELECT relname FROM pg_class WHERE relkind = 'r' AND relname = '$tableName' ;
+    " | tr -d ' \n'`
 
-    # テーブルを作成後のsqlファイル へのパス
-    # ex. /home/hoge/keep-watch-on-samba/src/sql/$dataBaseName/user_created.sql
-    createdTableSQL=$gitRootDirectoryPath/src/sql/$dataBaseName/${tableName}_created.sql
+    # テーブルが存在する時
+    if [ $existTableName = $tableName ]; then
+      echo "テーブル定義"
+      cat $createTableSQL
 
-    # /home/hoge/keep-watch-on-samba/src/sql/$dataBaseName/user.sql から
-    # へファイル名変更 /home/hoge/keep-watch-on-samba/src/sql/$dataBaseName/user_created.sql
-    # cp $createTableSQL $createdTableSQL
-
-    # $createdTableSQL のパスが存在するとき true
-    # true のとき、既にテーブルが作成されているので、テーブルを作成したsqlファイルを標準出力
-    cat $createdTableSQL
-    if [ -f $createdTableSQL ]; then
-      echo "テーブルを作成したSQL"
-      cat $createdTableSQL
-      echo
+    # テーブルが存在しない時
     else
-      cp $createTableSQL $createdTableSQL
+      # テーブル作成
+      # ex. psql -U ri-one -h 192.168.11.5 -d soccer < /home/ri-one/keep-watch-on-samba/src/sql/$dataBaseName/user.sql
       psql -U $USER -h $HOST -d $dataBaseName < $createTableSQL
     fi
 
@@ -100,7 +93,7 @@ log() {
     # file_pathの行をカウントし、その数を格納
     afterFilePathCount=`psql -U $USER -h $HOST -d $dataBaseName -t -c " \
     SELECT COUNT(file_path) FROM $tableName as count WHERE file_path = '$afterFilePath' ;
-    "`
+    " | tr -d ' \n'`
 
     echo $afterFilePathCount
     # ファイルを新規作成する時
