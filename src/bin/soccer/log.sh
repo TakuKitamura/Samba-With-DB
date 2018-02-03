@@ -50,33 +50,31 @@ log() {
 
     # ex. psql -U ri-one -h 192.168.11.5 -d soccer < /home/ri-one/keep-watch-on-samba/src/sql/$dataBaseName/user.sql
     # psql についての詳細は → Google!
-    psql -U $USER -h $HOST -d $dataBaseName < $createTableSQL
+    # psql -U $USER -h $HOST -d $dataBaseName < $createTableSQL
 
     # テーブルを作成後のsqlファイル へのパス
     # ex. /home/hoge/keep-watch-on-samba/src/sql/$dataBaseName/user_created.sql
     createdTableSQL=$gitRootDirectoryPath/src/sql/$dataBaseName/${tableName}_created.sql
 
-    if [ -f $createdTableSQL ]; then
-      echo "keep-watch-on-samba/src/sql/(データベース名)/(テーブル名)_created.sql というファイルが既に存在します。"
-      echo "もし、*_created.sql というファイルが必要ないのであれば削除してください。"
-      echo "ファイルの上書きを防ぐために終了します。"
-      echo "詳しくは、README を確認してください。"
-      exit 2
-    fi
-
     # /home/hoge/keep-watch-on-samba/src/sql/$dataBaseName/user.sql から
     # へファイル名変更 /home/hoge/keep-watch-on-samba/src/sql/$dataBaseName/user_created.sql
-    mv $createTableSQL $createdTableSQL
+    # cp $createTableSQL $createdTableSQL
 
     # $createdTableSQL のパスが存在するとき true
     # true のとき、既にテーブルが作成されているので、テーブルを作成したsqlファイルを標準出力
+    cat $createdTableSQL
     if [ -f $createdTableSQL ]; then
       echo "テーブルを作成したSQL"
       cat $createdTableSQL
       echo
+    else
+      echo "ああああああああああああああああああ"
+      cp $createTableSQL $createdTableSQL
+      psql -U $USER -h $HOST -d $dataBaseName < $createTableSQL
     fi
 
   else
+    echo $createTableSQL
     echo "keep-watch-on-samba/src/sql/(データベース名)/(テーブル名).sql というファイルを作成する必要があります。"
     echo "詳しくは、README を確認してください。"
     exit 2
@@ -88,11 +86,12 @@ log() {
   operation=$6
 
   # C言語的には SWITCH文
+  echo ope=$operation
   case $operation in
 
     # $operation が pwriteのときに行われたファイル操作は新規作成
     "pwrite" )
-
+      echo 実行:$operation
       # log 関数へ渡された第四引数
       # ex. hogetaro
       createFileUserName=$4

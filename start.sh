@@ -136,18 +136,18 @@ parseSambaLog() {
         echo operation, $operation
 
         # $beforeOperationAbsolutePathTemp の内容を $beforeOperationAbsolutePath へ格納
-        beforeOperationAbsolutePath=`cat $beforeOperationAbsolutePathTemp`
+        beforeOperationAbsolutePath=`cat beforeOperationAbsolutePathTemp`
         echo beforeOperationAbsolutePath, $beforeOperationAbsolutePath
 
         # 以降の処理では必要ない一時ファイルなので削除
-        rm $beforeOperationAbsolutePathTemp
+        rm beforeOperationAbsolutePathTemp
 
         # $afterOperationAbsolutePathTemp の内容を $afterOperationAbsolutePath へ格納
-        afterOperationAbsolutePath=`cat $afterOperationAbsolutePathTemp`
+        afterOperationAbsolutePath=`cat afterOperationAbsolutePathTemp`
         echo afterOperationAbsolutePath, $afterOperationAbsolutePath
 
         # 以降の処理では必要ない一時ファイルなので削除
-        rm $afterOperationAbsolutePathTemp
+        rm afterOperationAbsolutePathTemp
 
         # 外部関数呼び出し(上記の以下の処理)
         # outsideFunctionAbsolutePath=$gitRootDirectoryPath/src/bin/$tableName.sh
@@ -159,8 +159,10 @@ parseSambaLog() {
 
         # tableName　関数は、引数に格納されたデータをもとに、DBへSQLを発行する
         # SQL については → Google
-        $tableName $gitRootDirectoryPath $dataBaseName $tableName \
-          $netBIOSName $updatedTime $operation $beforeOperationAbsolutePath $afterOperationAbsolutePath
+	echo $tableName, $gitRootDirectoryPath, $dataBaseName, $tableName, \
+			          $netBIOSName, $updatedTime, $operation, $beforeOperationAbsolutePath, $afterOperationAbsolutePath
+        $tableName "$gitRootDirectoryPath" "$dataBaseName" "$tableName" \
+          "$netBIOSName" "$updatedTime" "$operation" "$beforeOperationAbsolutePath" "$afterOperationAbsolutePath"
       done
     fi
   done
@@ -180,7 +182,7 @@ parseSambaLog() {
 # }
 
 # main 処理
-sudo tail --follow=name --retry -n 0 $syslogSymbolicLink | parseSambaLog
+sudo tail --follow --retry -n 0 $syslogSymbolicLink | parseSambaLog
 
 echo "何かしらが原因で tail コマンドの実行が終了しました。"
 echo "何が原因で、 tail コマンドが終了したか調べてください。"
