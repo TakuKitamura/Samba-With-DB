@@ -15,13 +15,15 @@ sendAbsolutePathListOfFileServer() {
 
   host="13.231.55.13"
 
-  baseDirectory=`ssh -i $identifyFilePath $relayPointUser@$host "pwd"`/share/
+  relayPintBaseDirectory=`ssh -i $identifyFilePath $relayPointUser@$host "pwd"`/share/
 
-  sedCondition=`echo $baseDirectory | sed -e 's/\//\\\\\//g'`
+  fileServerBaseDirectory=$HOME/share/
 
-  absolutePathListOfFileServer=`find $baseDirectory | sed -e "s/$sedCondition//g" | sed '1d'`
+  sedCondition=`echo $fileServerBaseDirectory | sed -e 's/\//\\\\\//g'`
 
-  ssh -i $identifyFilePath $relayPointUser@$host "echo -e "$absolutePathListOfFileServer" > $baseDirectory.absolutePathListOfFileServer"
+  absolutePathListOfFileServer=`find $fileServerBaseDirectory | sed -e "s/$sedCondition//g" | sed '1d'`
+
+  ssh -i $identifyFilePath $relayPointUser@$host "echo -e "$absolutePathListOfFileServer" > $relayPintBaseDirectory.absolutePathListOfFileServer"
 }
 
 # log 関数は、引数に格納されたデータをもとに、DBへSQLを発行する
