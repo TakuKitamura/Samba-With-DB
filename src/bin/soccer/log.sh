@@ -95,6 +95,8 @@ log() {
     # ex. 2017/12/27 11:05:00
     updatedAt=$5
 
+    echo "SELECT COUNT(file_path) FROM $tableName as count WHERE file_path = '$filePath' ;"
+
     # file_pathの行をカウントし、その数を格納
     filePathCount=`psql -U $USER -h $HOST -d $dataBaseName -t -c " \
     SELECT COUNT(file_path) FROM $tableName as count WHERE file_path = '$filePath' ;
@@ -116,6 +118,10 @@ log() {
       # psql についての詳細は → Google!
       # SQL についての詳細は → Google!
 
+      echo "INSERT INTO $tableName \
+      (create_file_user_name, file_name, file_path, sha256, created_at, updated_at) \
+      VALUES ('$createFileUserName', '$fileName', '$filePath', '$sha256', '$updatedAt', '$updatedAt') ;"
+
       # ファイルを新規作成
       psql -U $USER -h $HOST -d $dataBaseName -c " \
       INSERT INTO $tableName \
@@ -125,6 +131,10 @@ log() {
 
       # 既に存在するファイルを更新した時
     else
+
+      echo "UPDATE $tableName SET sha256='$sha256', updated_at='$updatedAt' \
+      WHERE file_path='$filePath' ;"
+
       # ファイルを編集
       psql -U $USER -h $HOST -d $dataBaseName -c " \
       UPDATE $tableName SET sha256='$sha256', updated_at='$updatedAt' \
@@ -139,6 +149,8 @@ log() {
     "unlink" )
     # psql についての詳細は → Google!
     # SQL についての詳細は → Google!
+
+    echo "DELETE FROM $tableName WHERE file_path = '$filePath' ;"
 
     # ファイルを削除
     psql -U $USER -h $HOST -d $dataBaseName -c " \
@@ -165,6 +177,9 @@ log() {
       # psql についての詳細は → Google!
       # SQL についての詳細は → Google!
 
+      echo "UPDATE $tableName SET file_name='$fileName', file_Path='$filePath', updated_at='$updatedAt' \
+      WHERE file_path='$beforeFilePath' AND sha256 = '$sha256' ;"
+
       # ファイル名を変更
       psql -U $USER -h $HOST -d $dataBaseName -c " \
       UPDATE $tableName SET file_name='$fileName', file_Path='$filePath', updated_at='$updatedAt' \
@@ -175,12 +190,14 @@ log() {
     else
       # psql についての詳細は → Google!
       # SQL についての詳細は → Google!
-
       # ディレクトリ名変更前のパス
       beforeDirPath=$beforeFilePath/
 
       # ディレクトリ名変更後のパス
       dirPath=$filePath/
+
+      echo "UPDATE $tableName SET file_Path=replace(file_Path, '$beforeDirPath', '$dirPath') \
+      WHERE file_path LIKE '$beforeDirPath%' ;"
 
       # ディレクトリ名を変更
       psql -U $USER -h $HOST -d $dataBaseName -c " \
