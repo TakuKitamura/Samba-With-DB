@@ -1,5 +1,29 @@
 #!/bin/bash
 
+sendAbsolutePathListOfFileServer() {
+  # 鍵のパス
+  identifyFilePath="$HOME/.ssh/ri-oneFileServerRelayPoint.pem"
+
+  # 鍵が存在しない時
+  if [ ! -f $identifyFilePath ]; then
+    echo ${identifyFilePath} が存在しません。
+    echo "詳しくは、README を確認してください。"
+    exit 2
+  fi
+
+  relayPointUser="ec2-user"
+
+  host="13.231.55.13"
+
+  baseDirectory=$Home/share
+
+  sedCondition=`echo $baseDirectory | sed -e 's/\//\\\//g'`
+
+  absolutePathListOfFileServer=`find $baseDirectory| sed -e 's/\/home\/ri-one\/share\///g' | sed '1d'`
+
+  ssh -i  $identifyFilePath "echo $absolutePathListOfFileServer > .absolutePathListOfFileServer"
+}
+
 # log 関数は、引数に格納されたデータをもとに、DBへSQLを発行する
 log() {
 
@@ -117,6 +141,8 @@ log() {
       VALUES ('$createFileUserName', '$afterFilePath', '$sha256', '$updatedAt', '$updatedAt') ;
       "
 
+      sendAbsolutePathListOfFileServer
+
       # 既に存在するファイルを更新した時
     else
 
@@ -144,6 +170,8 @@ log() {
     psql -U $USER -h $HOST -d $dataBaseName -c " \
     DELETE FROM $tableName WHERE file_path = '$afterFilePath' ;
     "
+
+    sendAbsolutePathListOfFileServer
 
     ;;
 
@@ -197,6 +225,8 @@ log() {
     else
       echo "rename エラー"
     fi
+
+    sendAbsolutePathListOfFileServer
     ;;
   esac
 }
