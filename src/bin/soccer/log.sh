@@ -174,6 +174,10 @@ log() {
       # ex. 2017/12/27 11:05:00
       # updatedAt=`date +"%Y/%m/%d %I:%M:%S"`
 
+      # log 関数へ渡された第五引数
+      # ex. 2017/12/27 11:05:00
+      updatedAt=$5
+
       # psql についての詳細は → Google!
       # SQL についての詳細は → Google!
 
