@@ -100,9 +100,9 @@ log() {
       # file_pathの行をカウントし、その数を格納
       filePathCount=`psql -U $USER -h $HOST -d $dataBaseName -c " \
         SELECT COUNT(file_path) FROM $tableName as count WHERE file_path = '$filePath' ;
-        "
-        ` | cut -c 15
+        " | tr -d '\n' | tr -d ' ' | cut -c 13`
 
+      echo $filePathCount
       # ファイルを新規作成する時
       if [ $filePathCount = "0" ]; then
 
