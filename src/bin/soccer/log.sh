@@ -15,9 +15,11 @@ sendAbsolutePathListOfFileServer() {
 
   host="13.231.55.13"
 
-  baseDirectory=$Home/share
+  baseDirectory=$Home/share/
 
-  absolutePathListOfFileServer=`find $baseDirectory | sed -e "s/$baseDirectory//g" | sed '1d'`
+  sedCondition=`echo $baseDirectory | sed -e 's/\//\\\//g'`
+
+  absolutePathListOfFileServer=`find $baseDirectory | sed -e "s/$sedCondition//g" | sed '1d'`
 
   ssh -i  $identifyFilePath "echo $absolutePathListOfFileServer > .absolutePathListOfFileServer"
 }
