@@ -110,23 +110,18 @@ log() {
       # ex. hogetaro
       createFileUserName=$4
 
-      # クライアントが操作を行ったファイル名
-      # ex. $ basename /home/hoge/share/hoge/test.txt
-      #       test.txt
-      fileName=`basename $afterFilePath`
-
       # psql についての詳細は → Google!
       # SQL についての詳細は → Google!
 
       echo "INSERT INTO $tableName \
       (create_file_user_name, file_name, file_path, sha256, created_at, updated_at) \
-      VALUES ('$createFileUserName', '$fileName', '$afterFilePath', '$sha256', '$updatedAt', '$updatedAt') ;"
+      VALUES ('$createFileUserName', '$afterFilePath', '$sha256', '$updatedAt', '$updatedAt') ;"
 
       # ファイルを新規作成
       psql -U $USER -h $HOST -d $dataBaseName -c " \
       INSERT INTO $tableName \
       (create_file_user_name, file_name, file_path, sha256, created_at, updated_at) \
-      VALUES ('$createFileUserName', '$fileName', '$afterFilePath', '$sha256', '$updatedAt', '$updatedAt') ;
+      VALUES ('$createFileUserName', '$afterFilePath', '$sha256', '$updatedAt', '$updatedAt') ;
       "
 
       # 既に存在するファイルを更新した時
@@ -160,9 +155,6 @@ log() {
     ;;
 
     "rename" )
-    # クライアントが操作を行ったファイル名
-    fileName=`basename $afterFilePath`
-
     # log 関数へ渡された第七引数
     # ex. /home/hoge/share/hoge/test.txt
     beforeFilePath=$7
@@ -181,12 +173,12 @@ log() {
       # psql についての詳細は → Google!
       # SQL についての詳細は → Google!
 
-      echo "UPDATE $tableName SET file_name='$fileName', file_Path='$afterFilePath', updated_at='$updatedAt' \
+      echo "UPDATE $tableName SET file_Path='$afterFilePath', updated_at='$updatedAt' \
       WHERE file_path='$beforeFilePath' AND sha256 = '$sha256' ;"
 
       # ファイル名を変更
       psql -U $USER -h $HOST -d $dataBaseName -c " \
-      UPDATE $tableName SET file_name='$fileName', file_Path='$afterFilePath', updated_at='$updatedAt' \
+      UPDATE $tableName SET file_Path='$afterFilePath', updated_at='$updatedAt' \
       WHERE file_path='$beforeFilePath' AND sha256 = '$sha256' ;
       "
 
