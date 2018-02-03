@@ -172,7 +172,7 @@ log() {
 
       # log 関数へ渡された第四引数
       # ex. 2017/12/27 11:05:00
-      updatedAt=`date +"%Y/%m/%d %I:%M:%S"`
+      # updatedAt=`date +"%Y/%m/%d %I:%M:%S"`
 
       # psql についての詳細は → Google!
       # SQL についての詳細は → Google!
@@ -187,7 +187,7 @@ log() {
       "
 
       # ディレクトリの場合
-    else
+    elif [ -d $afterFilePath ]; then
       # psql についての詳細は → Google!
       # SQL についての詳細は → Google!
       # ディレクトリ名変更前のパス
@@ -204,6 +204,9 @@ log() {
       UPDATE $tableName SET file_Path=replace(file_Path, '$beforeDirPath', '$dirPath') \
       WHERE file_path LIKE '$beforeDirPath%' ;
       "
+
+    else
+      echo "rename エラー"
     fi
     ;;
   esac
