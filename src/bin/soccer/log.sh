@@ -54,7 +54,7 @@ log() {
     " | tr -d ' \n'`
 
     # テーブルが存在する時
-    if [ $existTableName = $tableName ]; then
+    if [ $existTableName ]; then
       echo "テーブル定義"
       cat $createTableSQL
 
@@ -107,13 +107,13 @@ log() {
       # SQL についての詳細は → Google!
 
       echo "INSERT INTO $tableName \
-      (create_file_user_name, file_name, file_path, sha256, created_at, updated_at) \
+      (create_file_user_name, file_path, sha256, created_at, updated_at) \
       VALUES ('$createFileUserName', '$afterFilePath', '$sha256', '$updatedAt', '$updatedAt') ;"
 
       # ファイルを新規作成
       psql -U $USER -h $HOST -d $dataBaseName -c " \
       INSERT INTO $tableName \
-      (create_file_user_name, file_name, file_path, sha256, created_at, updated_at) \
+      (create_file_user_name, file_path, sha256, created_at, updated_at) \
       VALUES ('$createFileUserName', '$afterFilePath', '$sha256', '$updatedAt', '$updatedAt') ;
       "
 
