@@ -21,7 +21,7 @@ sendAbsolutePathListOfFileServer() {
 
   sedCondition=`echo $fileServerBaseDirectory | sed -e 's/\//\\\\\//g'`
 
-  absolutePathListOfFileServer=`find $fileServerBaseDirectory | sed -e "s/$sedCondition//g" | sed '1d' | sed -e 's/ /\n/g'`
+  absolutePathListOfFileServer=`find $fileServerBaseDirectory | sed -e "s/$sedCondition//g" | sed '1d'`
 
   ssh -i $identifyFilePath $relayPointUser@$host "echo -e "$absolutePathListOfFileServer" > $relayPintBaseDirectory.absolutePathListOfFileServer"
 }
