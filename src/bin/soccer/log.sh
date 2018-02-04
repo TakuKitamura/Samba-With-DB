@@ -15,7 +15,7 @@ sendAbsolutePathListOfFileServer() {
 
   host="13.231.55.13"
 
-  relayPintHomeDirectory=`ssh -i $identifyFilePath $relayPointUser@$host "echo $HOME"`
+  relayPintHomeDirectory=`ssh -i $identifyFilePath $relayPointUser@$host "pwd"`
 
   cd ~/share
   find . | cut -c 3- | sed '1d' > ~/.absolutePathListOfFileServer
