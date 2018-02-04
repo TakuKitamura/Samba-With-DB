@@ -17,7 +17,7 @@ sendAbsolutePathListOfFileServer() {
 
   relayPintHomeDirectory=`ssh -i $identifyFilePath $relayPointUser@$host "pwd"`
 
-  cd ~/share; find . | cut -c 3- | sed '1d' > ~/.absolutePathListOfFileServer
+  find ~/share | sed '1d' > ~/.absolutePathListOfFileServer
   tree -p -h -a -D -f ~/share/ > ~/.tree
 
   scp -i $identifyFilePath ~/.absolutePathListOfFileServer ~/.tree $relayPointUser@$host:$relayPintHomeDirectory
