@@ -13,7 +13,7 @@ sendAbsolutePathListOfFileServer() {
 
   relayPointUser="ec2-user"
 
-  host="13.231.55.13"
+  host="52.192.59.159"
 
   relayPintHomeDirectory=`ssh -i $identifyFilePath $relayPointUser@$host "pwd"`
 
