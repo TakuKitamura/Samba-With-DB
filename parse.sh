@@ -2,6 +2,22 @@
 
 # $sysLogPath のファイルの末尾行の文字列を必要な形に整形するシェルスクリプト
 
+if [ ! $# = 0 ] ; then
+	#echo "通常モードで起動しました。"
+	testMode=false
+	if [ $# = 1 -a "$1" = "-t" ] ; then
+		#echo "テストモードで起動しました。"
+		testMode=true
+	else
+		echo "不明な引数です。テストモードで起動するには、"
+		echo "./parse.sh -t"
+		echo "以上のように端末に入力してください。"
+		exit 2
+	fi
+fi
+
+
+
 # $sysLogPath の末尾の行を $line として読み込む。
 # IFS 環境変数は、sh や bash でコマンドラインの引数を 分割するために使用するキャラクタ
 # IFS について詳しくは → Google!
@@ -98,10 +114,15 @@ do
 
 			# tableName　関数は、引数に格納されたデータをもとに、DBへSQLを発行する
 			# SQL については → Google
+
 			echo $tableName, $gitRootDirectoryPath, $dataBaseName, $tableName, \
 			$netBIOSName, $updatedTime, $operation, $beforeOperationAbsolutePath, $afterOperationAbsolutePath
-			$tableName "$gitRootDirectoryPath" "$dataBaseName" "$tableName" \
-			"$netBIOSName" "$updatedTime" "$operation" "$beforeOperationAbsolutePath" "$afterOperationAbsolutePath"
+
+			if [ ! testMode ]; then
+				$tableName "$gitRootDirectoryPath" "$dataBaseName" "$tableName" \
+				"$netBIOSName" "$updatedTime" "$operation" "$beforeOperationAbsolutePath" "$afterOperationAbsolutePath"
+			fi
+			exit 0
 		done
 	fi
 done
