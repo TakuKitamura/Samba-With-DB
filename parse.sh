@@ -117,7 +117,7 @@ do
 			# SQL については → Google
 
 
-			if [ -z $option ]; then
+			if [ -z "$option" ]; then
 				echo $tableName, $gitRootDirectoryPath, $dataBaseName, $tableName, \
 				$netBIOSName, $updatedTime, $operation, $beforeOperationAbsolutePath, $afterOperationAbsolutePath
 				$tableName "$gitRootDirectoryPath" "$dataBaseName" "$tableName" \
