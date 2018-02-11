@@ -116,8 +116,8 @@ do
 			# tableName　関数は、引数に格納されたデータをもとに、DBへSQLを発行する
 			# SQL については → Google
 
-
-			if [ -z "$option" ]; then
+echo "あああ$option"
+			if [ "-t" != "$option" ]; then
 				echo $tableName, $gitRootDirectoryPath, $dataBaseName, $tableName, \
 				$netBIOSName, $updatedTime, $operation, $beforeOperationAbsolutePath, $afterOperationAbsolutePath
 				$tableName "$gitRootDirectoryPath" "$dataBaseName" "$tableName" \
